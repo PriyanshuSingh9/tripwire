@@ -1,6 +1,6 @@
 services:
   falkordb:
-    image: falkordb/falkordb-server:latest
+    image: falkordb/falkordb:latest
     ports:
       - "6379:6379"
       # FalkorDB browser on host port 3001 so it does not collide with the

@@ -1,231 +1,304 @@
+/* Obsidian Graph Console design tokens.
+ *
+ * One place defines the approved palette, spacing, radii, borders and motion.
+ * Components read semantic roles (background, card, foreground, primary,
+ * safe, warning, critical, muted), never the raw hex values. The palette is
+ * confirmed dark: the workstation is used in long investigation sessions and
+ * the graph canvas needs a stable near-black field.
+ */
+
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
-/*
- * Obsidian Graph Console design tokens.
- * Every colour, radius and motion value used by the UI comes from here.
- * Tailwind utilities (bg-canvas, text-ink, text-dim, border-line, ...) and the
- * Cytoscape theme (lib/tokens.ts reads these variables) share one source.
- */
 :root {
-  --canvas: #080909;
-  --card: #141515;
-  --raised: #1b1c1c;
-  --accent: #f28c38;
-  --accent-ink: #080909;
-  --ink: #e6e7e5;
-  --dim: #858985;
-  --safe: #78b887;
-  --warning: #e9b44c;
-  --critical: #ef6a62;
+  /* Primitives: the approved Obsidian palette. Only the roles below read these. */
+  --obsidian-canvas: #080909;
+  --obsidian-card: #141515;
+  --obsidian-accent: #f28c38;
+  --obsidian-text: #e6e7e5;
+  --obsidian-safe: #78b887;
+  --obsidian-warning: #e9b44c;
+  --obsidian-critical: #ef6a62;
+  --obsidian-muted: #858985;
 
-  --line: rgba(230, 231, 229, 0.1);
-  --line-strong: rgba(230, 231, 229, 0.2);
-  --surface-hover: rgba(230, 231, 229, 0.04);
-  --accent-soft: rgba(242, 140, 56, 0.14);
+  /* Neutral shades derived from the same near-black family, used only for
+   * borders, hover surfaces, disabled controls and separators. */
+  --obsidian-raise: #191a1a;
+  --obsidian-sunken: #0e0f0f;
+  --obsidian-border: rgba(230, 231, 229, 0.1);
+  --obsidian-border-strong: rgba(230, 231, 229, 0.18);
+  --obsidian-hover: rgba(230, 231, 229, 0.05);
+  --obsidian-active: rgba(230, 231, 229, 0.09);
+  --obsidian-track: rgba(230, 231, 229, 0.07);
 
-  --r-card: 14px;
-  --r-control: 8px;
+  /* Roles. */
+  --background: var(--obsidian-canvas);
+  --foreground: var(--obsidian-text);
+  --card: var(--obsidian-card);
+  --card-foreground: var(--obsidian-text);
+  --popover: var(--obsidian-card);
+  --popover-foreground: var(--obsidian-text);
+  --primary: var(--obsidian-accent);
+  --primary-foreground: #17130e;
+  --secondary: var(--obsidian-raise);
+  --secondary-foreground: var(--obsidian-text);
+  --muted: var(--obsidian-sunken);
+  --muted-foreground: var(--obsidian-muted);
+  --safe: var(--obsidian-safe);
+  --warning: var(--obsidian-warning);
+  --critical: var(--obsidian-critical);
+  --border: var(--obsidian-border);
+  --border-strong: var(--obsidian-border-strong);
+  --input: var(--obsidian-border-strong);
+  --ring: var(--obsidian-accent);
+  --surface-hover: var(--obsidian-hover);
+  --surface-active: var(--obsidian-active);
+  --track: var(--obsidian-track);
 
+  /* Motion. Small interface transitions are fast; only panels travel further. */
   --motion-fast: 180ms;
   --motion-standard: 240ms;
-  --motion-panel: 300ms;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-panel: 260ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --radius-card: 14px;
+  --radius-control: 8px;
 }
 
 @theme inline {
-  --color-canvas: var(--canvas);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   --color-card: var(--card);
-  --color-raised: var(--raised);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
-  --color-accent-soft: var(--accent-soft);
-  --color-ink: var(--ink);
-  --color-dim: var(--dim);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-safe: var(--safe);
   --color-warning: var(--warning);
   --color-critical: var(--critical);
-  --color-line: var(--line);
-  --color-line-strong: var(--line-strong);
-  --color-hover: var(--surface-hover);
-  --radius-card: var(--r-card);
-  --radius-control: var(--r-control);
-  --font-sans: Inter, ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, monospace;
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-track: var(--track);
+
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 }
 
-html {
-  color-scheme: dark;
-  background: var(--canvas);
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Numeric columns line up: every figure in a table or KPI reads as a column. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* The ring colour is pre-set so `transition-colors` has nothing to
+   * interpolate when :focus-visible turns the outline on: the ring must
+   * appear immediately, not fade in from the element's text colour. */
+  * {
+    outline-color: var(--ring);
+  }
+
+  ::selection {
+    background-color: rgba(242, 140, 56, 0.28);
+  }
+
+  ::placeholder {
+    color: var(--muted-foreground);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--border-strong);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(230, 231, 229, 0.3);
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
 
-body {
-  background: var(--canvas);
-  color: var(--ink);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+/* Raised surfaces: a faint top-lit gradient, a hairline highlight and a soft
+ * drop shadow give cards, controls and figures the same softly dimensional
+ * read. Only neutral tones take part, so semantic colours keep their meaning. */
+@utility surface-raised {
+  background-image: linear-gradient(
+    180deg,
+    rgba(230, 231, 229, 0.048),
+    rgba(230, 231, 229, 0.012) 40%,
+    rgba(8, 9, 9, 0.2)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(230, 231, 229, 0.06),
+    0 1px 1px rgba(8, 9, 9, 0.5),
+    0 14px 34px -26px rgba(8, 9, 9, 0.95);
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+@utility bevel-accent {
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.04) 46%,
+    rgba(8, 9, 9, 0.16)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 1px 2px rgba(8, 9, 9, 0.5);
 }
 
-::selection {
-  background: var(--accent-soft);
+@utility bevel-neutral {
+  background-image: linear-gradient(
+    180deg,
+    rgba(230, 231, 229, 0.075),
+    rgba(230, 231, 229, 0.02) 52%,
+    rgba(8, 9, 9, 0.12)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(230, 231, 229, 0.09),
+    0 1px 2px rgba(8, 9, 9, 0.38);
 }
 
-/* Scrollbars stay quiet on the dark canvas. */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--line-strong) transparent;
+/* Panel reveal: a drawer or detail panel arrives from the edge it is anchored
+ * to, so the way back is obvious. Transform and opacity only. */
+@utility panel-reveal {
+  animation: panel-reveal var(--motion-panel) var(--ease-enter) both;
 }
 
-/* ---- Motion patterns (Transitions.dev equivalents) ---- */
-
-/* Number pop-in: remount with a new key to replay. */
-@keyframes pop-in {
+@keyframes panel-reveal {
   from {
     opacity: 0;
-    transform: translateY(6px) scale(0.96);
+    transform: translateX(12px);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: translateX(0);
   }
 }
-.pop-in {
-  animation: pop-in var(--motion-fast) var(--ease-out) both;
+
+/* Card resize: a card that expands into real detail keeps its identity while
+ * its content settles in. */
+@utility card-resize {
+  animation: card-resize var(--motion-standard) var(--ease-enter) both;
 }
 
-/* Icon swap: the incoming icon rotates and scales into place. */
-@keyframes icon-swap {
+@keyframes card-resize {
   from {
-    opacity: 0;
-    transform: rotate(-60deg) scale(0.5);
+    opacity: 0.4;
+    transform: scale(0.985);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: scale(1);
   }
 }
-.icon-swap {
-  animation: icon-swap var(--motion-fast) var(--ease-out) both;
+
+/* Number pop-in: marks a metric that was just recomputed. */
+@utility number-pop-in {
+  animation: number-pop-in 320ms var(--ease-enter) both;
 }
 
-/* Page side-by-side: list-to-detail slide inside Cases on narrow widths. */
-@keyframes slide-in {
+@keyframes number-pop-in {
+  0% {
+    opacity: 0.35;
+    transform: translateY(4px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@utility fade-in {
+  animation: fade-in var(--motion-fast) var(--ease-standard) both;
+}
+
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateX(24px);
   }
   to {
     opacity: 1;
-    transform: none;
   }
-}
-.slide-in {
-  animation: slide-in var(--motion-panel) var(--ease-out) both;
 }
 
-/* Fade-up for first paint of route content. */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-.fade-up {
-  animation: fade-up var(--motion-standard) var(--ease-out) both;
+@utility skeleton-pulse {
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
 }
 
-/* Skeleton shimmer is opacity only so it stays calm. */
-@keyframes pulse-soft {
-  50% {
+@keyframes skeleton-pulse {
+  0%,
+  100% {
     opacity: 0.55;
   }
-}
-.skeleton {
-  background: var(--raised);
-  border-radius: 6px;
-  animation: pulse-soft 1.6s ease-in-out infinite;
-}
-
-/* Panel reveal / card resize: grid tracks animate between 0 and content size. */
-/* Below lg the panel is a fixed slide-over styled in the component. */
-@media (min-width: 1024px) {
-  .reveal-x {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 0fr;
-    transition: grid-template-columns var(--motion-panel) var(--ease-out);
-  }
-  .reveal-x[data-open="true"] {
-    grid-template-columns: minmax(0, 1fr) minmax(0, var(--panel-width, 400px));
-  }
-  .reveal-x > .reveal-x-panel {
-    min-width: 0;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateX(16px);
-    transition:
-      opacity var(--motion-standard) var(--ease-out),
-      transform var(--motion-panel) var(--ease-out);
-  }
-  .reveal-x[data-open="true"] > .reveal-x-panel {
-    opacity: 1;
-    transform: none;
+  50% {
+    opacity: 0.9;
   }
 }
 
-.reveal-y {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows var(--motion-panel) var(--ease-out);
-}
-.reveal-y[data-open="true"] {
-  grid-template-rows: 1fr;
-}
-.reveal-y > .reveal-y-inner {
-  min-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity var(--motion-standard) var(--ease-out);
-}
-.reveal-y[data-open="true"] > .reveal-y-inner {
-  opacity: 1;
-}
-
-/* Subtle state transition for selectable rows and cards. */
-.selectable {
-  transition:
-    background-color var(--motion-fast) var(--ease-out),
-    border-color var(--motion-fast) var(--ease-out);
-}
-
-dialog::backdrop {
-  background: rgba(8, 9, 9, 0.7);
-}
-dialog[open] {
-  animation: pop-in var(--motion-standard) var(--ease-out) both;
-}
-
+/* Reduced motion keeps every state change and drops the travel. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
     scroll-behavior: auto !important;
-  }
-  .reveal-x > .reveal-x-panel {
-    transform: none;
   }
 }

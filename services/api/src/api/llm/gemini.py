@@ -32,6 +32,11 @@ logger = logging.getLogger("api.llm")
 
 TIMEOUT_STATUS_CODES = frozenset({408, 504})
 
+# The provider rejects requests whose manual deadline is under ten seconds
+# (HTTP 400 INVALID_ARGUMENT), so a short remaining budget must still be sent
+# as at least this floor or the call is guaranteed to fail.
+MIN_PROVIDER_TIMEOUT_MS = 10_000
+
 
 def _classify(exc: BaseException) -> ProviderError:
     """Map an SDK or transport exception to a coarse provider failure."""
@@ -94,7 +99,7 @@ class GeminiSession:
         remaining = deadline - time.perf_counter()
         if remaining <= 0:
             raise ProviderError("timeout")
-        return self._types.HttpOptions(timeout=max(1_000, int(remaining * 1000)))
+        return self._types.HttpOptions(timeout=max(MIN_PROVIDER_TIMEOUT_MS, int(remaining * 1000)))
 
     def step(self, tool_results: Sequence[ToolResultMessage] | None, *, deadline: float) -> Turn:
         types = self._types
